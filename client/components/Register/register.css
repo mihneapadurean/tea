@@ -1,0 +1,46 @@
+/* Style the container element */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    margin: 0 auto;
+  }
+  
+  /* Style the h1 element */
+  h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 32px;
+    color: #333333;
+  }
+  
+  /* Style the label element */
+  label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: #333333;
+  }
+  
+  /* Style the input element */
+  input {
+    width: 300px;
+    height: 30px;
+    margin: 10px;
+    padding: 5px;
+    border: 1px solid #cccccc;
+  }
+  
+  /* Style the button element */
+  button {
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    background-color: #f44336;
+    color: #ffffff;
+  }
+  
+  /* Style the p element */
+  p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+  }
