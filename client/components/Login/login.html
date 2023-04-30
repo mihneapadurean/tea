@@ -1,10 +1,16 @@
 <div class="container">
     <h1>Tea Time</h1>
+
     <label for="email"><b>Email</b></label>
     <input id="email-input" type="email" placeholder="Enter email" name="email">
+    <span id="email-error-span" class="error"></span>
+
     <label for="psw"><b>Password</b></label>
     <input id="password-input" type="password" placeholder="Enter password" name="psw">
-    <span class="error"></span>
-    <button class="btn-primary">Login</button>
-    <p>Don't have an account? <a href="#register">Create one!</a></p>
+    <span id="password-error-span" class="error"></span>
+
+    <span id="login-error-span" class="error"></span>
+    <button id="login-button" class="btn-primary">Login</button>
+
+    <p>Don't have an account? <a id="create-account-button" href="#">Create one!</a></p>
 </div>

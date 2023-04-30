@@ -1,6 +1,6 @@
 import { BaseComponent } from "../BaseComponent.js";
 
-class NavBarComponent extends BaseComponent {
+export class HomeViewComponent extends BaseComponent {
     constructor() {
         super();
     }
@@ -10,4 +10,4 @@ class NavBarComponent extends BaseComponent {
     }
 }
 
-customElements.define('nav-bar', NavBarComponent);
+customElements.define('view-component', HomeViewComponent);

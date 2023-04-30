@@ -7,12 +7,12 @@ export class BaseComponent extends HTMLElement{
         this.componentName = this.constructor.name.replace(new RegExp('Component$'), '').toLowerCase();
     }
 
-    async LoadComponentAsync(htmlArguments = {}) {
+    async LoadComponentAsync(htmlArguments = {}, path = null) {
         this.attachShadow({ mode: 'open' });
 
         await loadStylesheet(`components/${this.componentName}/${this.componentName}.css`, this.shadowRoot);
 
-        const htmlResponse = await fetch(`components/${this.componentName}/${this.componentName}.html`);
+        const htmlResponse = await fetch(`components/${path || this.componentName}/${this.componentName}.html`);
         const html = await htmlResponse.text();
 
         var template = document.createElement('template');

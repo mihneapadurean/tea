@@ -1,8 +1,9 @@
-import { BaseComponent } from "../BaseComponent.js";
 import { isEmailValid } from "../../helpers/regexHelpers.js";
 import { API_URL } from "../../constants.js";
+import { BaseComponent } from "../BaseComponent.js";
 
-class LoginComponent extends BaseComponent {
+export class LoginComponent extends BaseComponent {
+    
     constructor() {
         super();
     }
@@ -10,56 +11,93 @@ class LoginComponent extends BaseComponent {
     async connectedCallback() {
         await this.LoadComponentAsync();
 
-        const submitButton = this.shadowRoot.querySelector(".btn-primary");
+        this.setupEmailInputValidation();
+        this.setupPasswordInputValidation();
+        this.setupLoginButton();
+        this.setupCreateAccountButton();
+    }
+
+    setupEmailInputValidation() {
         const emailInput = this.shadowRoot.getElementById("email-input");
-        const passwordInput = this.shadowRoot.getElementById("password-input");
+        const emailErrorSpan = this.shadowRoot.getElementById("email-error-span");
 
-        submitButton.onclick = async () => {
-            let valid = true;
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            if(!email || !isEmailValid(email)) {
+        this.emailValid = false;
+
+        emailInput.oninput = () => {
+            if(!isEmailValid(emailInput.value)) {
                 emailInput.classList.add("invalid");
-                valid = false;
+                this.emailValid = false;
+            } else {
+                emailInput.classList.remove("invalid");
+                this.emailValid = true;
             }
+        }
 
-            if(!password) {
-                passwordInput.classList.add("invalid");
-                valid = false;
-            }
-
-            if(!valid)
-            {
+        emailInput.onblur = () => {
+            if(!emailInput.value) {
+                emailInput.classList.add("invalid");
+                emailErrorSpan.style.display = "block";
+                emailErrorSpan.textContent = "Please enter an email address.";
                 return;
             }
 
-            await this.LoginAsync(email, password);
-        };
-
-        emailInput.oninput = () => {
-            if(emailInput.value) [
-                emailInput.classList.remove("invalid")
-            ]
-        }
-        emailInput.onblur = () => {
             if(!isEmailValid(emailInput.value)) {
                 emailInput.classList.add("invalid");
-            } else {
-                emailInput.classList.remove("invalid");
-            }
+                emailErrorSpan.style.display = "block";
+                emailErrorSpan.textContent = "Please enter a valid email address.";
+                return;
+            } 
+
+            emailErrorSpan.style.display = "none";
         }
+    }
+
+    setupPasswordInputValidation() {
+        const passwordInput = this.shadowRoot.getElementById("password-input");
+        const passwordErrorSpan = this.shadowRoot.getElementById("password-error-span");
+
+        this.passwordValid = false;
 
         passwordInput.oninput = () => {
-            if(passwordInput.value) [
-                passwordInput.classList.remove("invalid")
-            ]
+            if(passwordInput.value) {
+                passwordInput.classList.remove("invalid");
+                this.passwordValid = true;
+                return;
+            }
+
+            this.passwordValid = false;
         }
         passwordInput.onblur = () => {
             if(!passwordInput.value) {
                 passwordInput.classList.add("invalid");
-            } else {
-                passwordInput.classList.remove("invalid");
+                passwordErrorSpan.style.display = "block";
+                passwordErrorSpan.textContent = "Please enter a password.";
+                return;
             }
+
+            passwordErrorSpan.style.display = "none";
+        }
+    }
+
+    setupLoginButton() {
+        const submitButton = this.shadowRoot.getElementById("login-button");
+        const emailInput = this.shadowRoot.getElementById("email-input");
+        const passwordInput = this.shadowRoot.getElementById("password-input");
+
+        submitButton.onclick = async () => {
+            console.log(this.emailValid, this.passwordValid);
+            if(!this.emailValid || !this.passwordValid) {
+                return;
+            }
+
+            await this.LoginAsync(emailInput.value, passwordInput.value);
+        };
+    }
+
+    setupCreateAccountButton() {
+        const createAccountButton = this.shadowRoot.getElementById("create-account-button");
+        createAccountButton.onclick = () => {
+            this.dispatchEvent(new CustomEvent("create-account-clicked"));
         }
     }
 
@@ -70,7 +108,7 @@ class LoginComponent extends BaseComponent {
         });
 
         if(!response.ok) {
-            var errorSpan = this.shadowRoot.querySelector(".error");
+            var errorSpan = this.shadowRoot.getElementById("login-error-span");
             errorSpan.style.display = "block";
             errorSpan.textContent = "Invalid email or password";
             return;
@@ -78,6 +116,7 @@ class LoginComponent extends BaseComponent {
 
         const data = await response.json();
         localStorage.setItem("access_token", data.access_token);
+        this.dispatchEvent(new CustomEvent("login-successful", { bubbles: true, composed: true }));
     }
 }
 
