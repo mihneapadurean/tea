@@ -1,0 +1,55 @@
+<h2>Tea Types</h2>
+<button id="add-tea-button" onclick="openModal()">Add Tea</button>
+
+<div class="search-container">
+  <input type="text" placeholder="Search by tea name...">
+</div>
+
+<table id="tea-table">
+    <tr>
+      <th>Name</th>
+      <th>Caffeine</th>
+      <th>Type</th>
+      <th>Rating</th>
+      <th>Description</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+
+</table>
+
+<div id="add-tea-modal" class="modal">
+  <div class="modal-content">
+    <span id="close-span" class="close" onclick="closeModal()">&times;</span>
+    <form id="add-tea-form" onsubmit="addTea(); return false;">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required><br>
+
+      <label for="type">Type:</label>
+      <select id="type" name="type" required>
+        <option value="">Select Type</option>
+        <option value="Green">Green</option>
+        <option value="Black">Black</option>
+        <option value="Oolong">Oolong</option>
+        <option value="Herbal">Herbal</option>
+        <option value="White">White</option>
+      </select><br>
+
+      <label for="caffeine">Caffeine:</label>
+      <select id="caffeine" name="caffeine" required>
+        <option value="">Select Caffeine Level</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select><br>
+
+      <label for="rating">Rating:</label>
+      <input type="number" id="rating" name="rating" required min="1" max="5"><br>
+
+      <label for="description">Description:</label>
+      <input id="description" name="description"></textarea><br>
+
+      <button class="btn-primary">Add Tea</button>
+    </form>
+  </div>
+</div>
