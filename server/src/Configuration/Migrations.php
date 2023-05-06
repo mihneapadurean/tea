@@ -40,7 +40,16 @@ $connection->query("
         Email NVARCHAR(200) NOT NULL,
         Password NVARCHAR(200) NOT NULL,
         Role NVARCHAR(20) NOT NULL
-    )
+    );
+
+    CREATE TABLE IF NOT EXISTS Teas (
+      Id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      Name NVARCHAR(200) NOT NULL,
+      Type NVARCHAR(200) NOT NULL,
+      Caffeine BIT NOT NULL,
+      Rating INT NOT NULL,
+      Description NVARCHAR(200)
+    );
 ");
 
 $connection->close();

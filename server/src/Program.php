@@ -26,25 +26,7 @@ class Program
                                     http_response_code(201);
                                 });
 
-        $teaResponse = [
-            [
-                "Name" => "Earl Grey",
-                "Type" => "Black",
-                "Caffeine"  => "High",
-                "Rating" => 5,
-                "PurchaseDate" => "2023-01-01",
-                "Description" => "Good for any ocassion"
-            ],
-            [
-                "Name" => "Sencha",
-                "Type" => "Green",
-                "Caffeine"  => "Medium",
-                "Rating" => 4,
-                "PurchaseDate" => "2023-02-01",
-                "Description" => "Great but a bit bitter"
-            ]
-        ];
-        $router->get('/tea', function() use($teaResponse) { echo json_encode($teaResponse); });
+        $router->get('/teas', function() use($teaResponse) { echo json_encode($teaResponse); });
 
 
         $router->resolve($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);

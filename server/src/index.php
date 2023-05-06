@@ -22,7 +22,7 @@ catch(MainException $mainException)
 }
 catch(\Exception $exception)
 {
-    http_response_code(500);
     echo json_encode($exception->getMessage());
+    http_response_code(500);
     die();
 }

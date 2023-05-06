@@ -2,12 +2,13 @@
 <button id="add-tea-button" onclick="openModal()">Add Tea</button>
 
 <div class="search-container">
-  <input type="text" placeholder="Search by tea name...">
+  <input id="search-input" type="text" placeholder="Search by tea name...">
 </div>
 
 <table id="tea-table">
+  <thead>
     <tr>
-      <th>Name</th>
+      <th id="name-column">Name</th>
       <th>Caffeine</th>
       <th>Type</th>
       <th>Rating</th>
@@ -15,8 +16,10 @@
       <th>Edit</th>
       <th>Delete</th>
     </tr>
-
+  </thead>
+  <tbody></tbody>
 </table>
+<button id="show-more-button">Show More</button>
 
 <div id="add-tea-modal" class="modal">
   <div class="modal-content">
