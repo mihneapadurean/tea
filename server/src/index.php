@@ -5,12 +5,14 @@ use Server\Exceptions\MainException;
 
 require_once("Program.php");
 require_once('Exceptions/MainException.php');
+require_once('Configuration/ErrorConfiguration.php');
+require_once('Configuration/Migrations.php');
 
 
 try 
 {
-    require_once('Configuration/ErrorConfiguration.php');
-    require_once('Configuration/Migrations.php');
+    ApplyMigrations();
+    SetErrorHandler();
 
     Program::start();
 }

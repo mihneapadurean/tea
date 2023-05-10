@@ -1,0 +1,21 @@
+<div class="container">
+    <h1>Tea Time</h1>
+    <form onsubmit="this.getRootNode().host.registerAsync(); return false;">
+        <label for="email"><b>Email</b></label>
+        <input id="email-input" type="email" placeholder="Enter Email" name="email" required>
+        <label for="name"><b>Name</b></label>
+        <input id="name-input" type="text" placeholder="Enter Name" name="name" required>
+        <label for="psw"><b>Password</b></label>
+        <input id="password-input" type="password" placeholder="Enter Password" name="psw" required>
+        <label for="psw-confirm"><b>Confirm Password</b></label>
+        <input id="confirm-password-input" type="password" placeholder="Confirm Password" name="psw-confirm" required onchange="this.setCustomValidity('')">
+        <span class="register-error-span"></span>
+        <button type="submit" id="register-button" class="btn-primary" 
+                onclick="this.dispatchEvent(new CustomEvent('login-instead-clicked'))"
+        >
+            Register
+        </button>
+    </form>
+
+    <p>Already have an account? <a id="login-button" href="#">Login here!</a></p>
+</div>

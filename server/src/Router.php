@@ -23,18 +23,32 @@ class Router
         return $this;
     }
 
+    public function delete(string $route, callable $action)
+    {
+        $this->routes["DELETE"]['/api' .$route] = $action;
+        return $this;
+    }
+
     public function resolve(string $route, string $method)
     {
-        $route = explode('?', $route)[0];
+        $parts = explode('?', $route);
 
-        $action = $this->routes[$method][$route] ?? null;
+        $action = $this->routes[$method][$parts[0]] ?? null;
 
         header("Access-Control-Allow-Origin: *");
         if(!$action) {
-            throw new RouteNotFoundException($route);
+            throw new RouteNotFoundException($parts[0]);
         }
 
-        $body = json_decode(file_get_contents("php://input"), true);
-        return $action($body);
+        $queries = array();
+        if(count($parts) > 1)
+        {
+            parse_str($parts[1], $queries);
+        }
+
+        $body = json_decode(file_get_contents("php://input"), true) ?? array();
+        
+        $params = array_merge($queries, $body);
+        return $action($params);
     }
 }

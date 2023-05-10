@@ -1,5 +1,5 @@
 <h2>Tea Types</h2>
-<button id="add-tea-button" onclick="openModal()">Add Tea</button>
+<button id="add-tea-button" onclick="this.getRootNode().host.showModal('add-tea-modal')">Add Tea</button>
 
 <div class="search-container">
   <input id="search-input" type="text" placeholder="Search by tea name...">
@@ -13,7 +13,6 @@
       <th>Type</th>
       <th>Rating</th>
       <th>Description</th>
-      <th>Edit</th>
       <th>Delete</th>
     </tr>
   </thead>
@@ -23,27 +22,18 @@
 
 <div id="add-tea-modal" class="modal">
   <div class="modal-content">
-    <span id="close-span" class="close" onclick="closeModal()">&times;</span>
-    <form id="add-tea-form" onsubmit="addTea(); return false;">
+    <span id="close-span" class="close" onclick="this.getRootNode().host.closeModal('add-tea-modal')">&times;</span>
+    <form id="add-tea-form" onsubmit="this.getRootNode().host.addTea(); return false;">
       <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required><br>
+      <input type="text" id="name-input" name="name" required><br>
 
       <label for="type">Type:</label>
-      <select id="type" name="type" required>
-        <option value="">Select Type</option>
-        <option value="Green">Green</option>
-        <option value="Black">Black</option>
-        <option value="Oolong">Oolong</option>
-        <option value="Herbal">Herbal</option>
-        <option value="White">White</option>
+      <select id="type-select" name="type" required>
       </select><br>
 
       <label for="caffeine">Caffeine:</label>
-      <select id="caffeine" name="caffeine" required>
-        <option value="">Select Caffeine Level</option>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
+      <select id="caffeine-select" name="caffeine" required>
+        <option value="">Select Caffeine</option>
       </select><br>
 
       <label for="rating">Rating:</label>
@@ -52,7 +42,7 @@
       <label for="description">Description:</label>
       <input id="description" name="description"></textarea><br>
 
-      <button class="btn-primary">Add Tea</button>
+      <button type="submit" class="btn-primary">Add Tea</button>
     </form>
   </div>
 </div>

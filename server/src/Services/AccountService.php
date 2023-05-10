@@ -17,7 +17,7 @@ class AccountService extends BaseService
         $this->tokenService = new TokenService();
     }
 
-    public function login(string $email, string $password) : string
+    public function login(string $email, string $password) : array
     {
         $connection = $this->GetConnection();
         $query = "SELECT id, name, email, password, role FROM Users WHERE email = ?";
@@ -32,7 +32,11 @@ class AccountService extends BaseService
         {
             throw new InvalidCredentialsException();
         }
-        return $this->tokenService->generate_token($id, $name, $role);
+        
+        return [
+            "acces_token" => $this->tokenService->generate_token($id, $name, $role),
+            "role" => $role
+        ];
     }
 
     public function createUserAccount(string $name, string $email, string $password) : void

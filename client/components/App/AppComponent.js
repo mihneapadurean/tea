@@ -1,4 +1,4 @@
-import { AuthenticationViewComponent } from "../AuthenticationView/AuthenticationViewComponent.js";
+import { AuthenticationViewComponent } from "../Authentication/AuthenticationView/AuthenticationViewComponent.js";
 import { BaseComponent } from "../BaseComponent.js";
 import { HomeViewComponent } from "../HomeView/HomeViewComponent.js";
 

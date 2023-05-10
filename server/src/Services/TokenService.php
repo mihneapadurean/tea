@@ -17,7 +17,7 @@ class TokenService
         $this->secret = parse_ini_file('appSettings.ini')['jwt_secret'];
     }
 
-    public function generate_token(int $userId, string $name, string $role) : string
+    public function generate_token(int $userId, string $role, string $name) : string
     {
         $headers = ['alg' => 'HS256', 'typ' => 'JWT'];
         $payload = ['sub' => $userId, 'role' => $role, 'name' => $name];
@@ -29,7 +29,7 @@ class TokenService
     {
 	    $tokenParts = explode('.', $token);
 	    $header = base64_decode($tokenParts[0]);
-        $payload = json_decode(base64_decode($tokenParts[1]));
+        $payload = base64_decode($tokenParts[1]);
         $signature_provided = $tokenParts[2];
 
         // build a signature based on the header and payload using the secret
@@ -46,7 +46,8 @@ class TokenService
             throw new InvalidTokenException();
         }
 
-        return new Context($payload->sub, $payload->role);
+        $parsedPayload = json_decode($payload);
+        return new Context($parsedPayload->sub, $parsedPayload->role);
     }
 
     private function generate_jwt(array $headers, array $payload) : string

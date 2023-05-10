@@ -2,10 +2,15 @@
 
 namespace Server;
 
+use Server\Models\Tea;
 use Server\Services\AccountService;
+use Server\Services\TeaService;
+use Server\Services\TokenService;
 
 require_once('Router.php');
 require_once('Services/AccountService.php');
+require_once('Services/TeaService.php');
+require_once('Services/TokenService.php');
 
 class Program
 {
@@ -13,20 +18,65 @@ class Program
     {
         $router = new Router();
 
-        $router->post('/login', function(array $body) 
+        $router->post('/login', function(array $params) 
                                 { 
-                                    $accountService = new AccountService();
-                                    $token = $accountService->login($body['email'], $body['password']);
-                                    echo json_encode(['access_token' => $token]);
+                                    $result = (new AccountService())->login($params['email'], $params['password']);
+                                    echo json_encode($result);
                                 })
-                ->post('/register', function(array $body) 
+                ->post('/register', function(array $params) 
                                 { 
-                                    $accountService = new AccountService();
-                                    $accountService->createUserAccount($body['name'], $body['email'], $body['password']);
+                                    (new AccountService())->createUserAccount($params['name'], $params['email'], $params['password']);
                                     http_response_code(201);
                                 });
 
-        $router->get('/teas', function() use($teaResponse) { echo json_encode($teaResponse); });
+        $router->post('/teas', function(array $params) 
+                            { 
+                                if(!array_key_exists('HTTP_AUTHORIZATION', $_SERVER)) {
+                                    http_response_code(401);
+                                    die();
+                                }
+
+                                $context = (new TokenService())->is_token_valid($_SERVER['HTTP_AUTHORIZATION']);
+                                if($context->Role !== 'Admin') {
+                                    http_response_code(403);
+                                    echo json_encode($context);
+                                    die();
+                                }
+
+                                $newTea = new Tea($params['name'], $params['type'], $params['caffeine'], $params['rating'], $params['description']);
+
+                                (new TeaService())->createTea($newTea);
+
+                                http_response_code(201);
+                                echo json_encode($newTea);
+                            })
+                ->delete('/teas', function(array $params) 
+                            { 
+                                if(!array_key_exists('HTTP_AUTHORIZATION', $_SERVER)) {
+                                    http_response_code(401);
+                                    die();
+                                }
+
+                                $context = (new TokenService())->is_token_valid($_SERVER['HTTP_AUTHORIZATION']);
+                                if($context->Role !== 'admin') {
+                                    http_response_code(403);
+                                    echo json_encode(['message' => 'You are not authorized to perform this action']);
+                                    die();
+                                }
+
+                                (new TeaService())->deleteTea($params['id']);
+                                http_response_code(204);
+                            })
+                ->get('/teas', function() 
+                            { 
+                                if(!array_key_exists('HTTP_AUTHORIZATION', $_SERVER)) {
+                                    http_response_code(401);
+                                    die();
+                                }
+
+                                $teas = (new TeaService())->getAll();
+                                echo json_encode($teas);
+                            });
 
 
         $router->resolve($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);

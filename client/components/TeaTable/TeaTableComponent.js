@@ -1,5 +1,13 @@
 import { BaseComponent } from "../BaseComponent.js";
 
+const teaTypesCaffeine = {
+    "Black": ['Low', 'Medium', 'High'],
+    "Green": ['Medium', 'High'],
+    "White": ['None', 'Low'],
+    "Oolong": ['None', 'Low'],
+    "Herbal": ['None']
+}
+
 class TeaTableComponent extends BaseComponent {
     constructor() {
         super();
@@ -9,13 +17,6 @@ class TeaTableComponent extends BaseComponent {
         await this.LoadComponentAsync();
 
         this.table = this.shadowRoot.getElementById('tea-table');
-        this.addTeaModal = this.shadowRoot.getElementById('add-tea-modal');
-
-        this.addTeaButton = this.shadowRoot.getElementById('add-tea-button');
-        this.addTeaButton.onclick = () => addTeaModal.style.display = "block";
-
-        this.closeSpan = this.shadowRoot.getElementById('close-span');
-        this.closeSpan.onclick = () => addTeaModal.style.display = "none";
 
         const tea1 = {
             id: 1,
@@ -49,9 +50,80 @@ class TeaTableComponent extends BaseComponent {
         this.nameSorting = 0; //0 - no, 1 - asc, 2 - desc
         this.renderTable(this.teas);
 
+        this.setupSelects();
         this.setupSearchField();
         this.setupShowMore();
         this.setupColumnSorting();
+    }
+
+    async addTea() {
+        const addTeaForm = this.shadowRoot.getElementById("add-tea-form");
+        const formData = new FormData(addTeaForm);
+
+        const tea = {
+            name: formData.get("name"),
+            type: formData.get("type"),
+            caffeine: formData.get("caffeine"),
+            rating: formData.get("rating"),
+            description: formData.get("description")
+        };
+
+        await fetch()
+
+        this.teas.push(tea);
+        this.renderTable(this.teas);
+        this.closeModal("add-tea-modal");
+    }
+
+    async deleteTea(id) {
+        this.teas = this.teas.filter(t => t.id !== id);
+        this.renderTable(this.teas);
+    }
+
+    showModal(modalId) {
+        this.shadowRoot.getElementById(modalId).style.display = "block";
+    }
+
+    closeModal(modalId) {
+        this.shadowRoot.getElementById(modalId).style.display = "none";
+
+        const addTeaForm = this.shadowRoot.getElementById("add-tea-form");
+        addTeaForm.reset();
+    }
+
+    setupSelects() {
+        const typeSelect = $(this.shadowRoot).find("#type-select");
+        typeSelect.append($('<option>', {
+            value: '',
+            text: 'Select Type'
+        }));
+
+        for(const type in teaTypesCaffeine) {
+            typeSelect.append($('<option>', {
+                value: type,
+                text: type
+            }));
+        }
+
+        typeSelect.change(() => { 
+            const selectedType = typeSelect.val();
+            const caffeineSelect = $(this.shadowRoot).find("#caffeine-select");
+
+            caffeineSelect.empty();
+            caffeineSelect.append($('<option>', {
+                value: '',
+                text: 'Select Caffeine'
+            }));
+
+            if(selectedType) {
+                teaTypesCaffeine[selectedType].forEach(caffeine => {
+                    caffeineSelect.append($('<option>', {
+                        value: caffeine,
+                        text: caffeine
+                    }));
+                });
+            }
+        })
     }
 
     setupShowMore() {
@@ -78,7 +150,7 @@ class TeaTableComponent extends BaseComponent {
 
     setupColumnSorting() {
         const nameColumn = $(this.shadowRoot).find('#name-column');
-        console.log(nameColumn);
+
         nameColumn.click(() => {
             this.nameSorting = (this.nameSorting + 1) % 3;
             this.renderTable();
@@ -166,8 +238,7 @@ class TeaTableComponent extends BaseComponent {
         const caffeine = row.insertCell(2);
         const rating = row.insertCell(3);
         const description = row.insertCell(4);
-        const editButtonCell = row.insertCell(5);
-        const deleteButtonCell = row.insertCell(6);
+        const deleteButtonCell = row.insertCell(5);
 
         name.innerHTML = tea.name;
         type.innerHTML = tea.type;
@@ -175,23 +246,10 @@ class TeaTableComponent extends BaseComponent {
         rating.innerHTML = '&#11088;'.repeat(tea.rating);
         description.innerHTML = tea.description;
 
-        const editButton = document.createElement('button');
-        editButton.textContent = "Edit";
-        editButton.onclick = () => this.editTea(tea.id);
-        editButtonCell.appendChild(editButton);
-
         const deleteButton = document.createElement('button');
         deleteButton.textContent = "Delete";
         deleteButton.onclick = () => this.deleteTea(tea.id);
         deleteButtonCell.appendChild(deleteButton);
-    }
-
-    editTea(id) {
-        console.log(id);
-    }
-
-    deleteTea(id) {
-        console.log(id);
     }
 }
 

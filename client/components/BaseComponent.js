@@ -1,22 +1,29 @@
 import { formatUnicorn } from '../helpers/stringHelpers.js'
-import { loadStylesheet } from '../helpers/loadHelpers.js';
 
 export class BaseComponent extends HTMLElement{
-    constructor() {
+    constructor(componentPath = null) {
         super();
+        this.componentPath = componentPath || "components";
         this.componentName = this.constructor.name.replace(new RegExp('Component$'), '').toLowerCase();
     }
 
-    async LoadComponentAsync(htmlArguments = {}, path = null) {
+    async LoadComponentAsync(htmlArguments = {}) {
         this.attachShadow({ mode: 'open' });
 
-        await loadStylesheet(`components/${this.componentName}/${this.componentName}.css`, this.shadowRoot);
+        const cssResponse = await fetch(`${this.componentPath}/${this.componentName}/${this.componentName}.css`);
+        if(cssResponse.ok) {
+            const style = document.createElement('style');
+            style.textContent = await cssResponse.text();
+            this.shadowRoot.append(style);
+        }
 
-        const htmlResponse = await fetch(`components/${path || this.componentName}/${this.componentName}.html`);
-        const html = await htmlResponse.text();
+        const htmlResponse = await fetch(`${this.componentPath}/${this.componentName}/${this.componentName}.html`);
+        if(htmlResponse.ok) {
+            const html = await htmlResponse.text();
 
-        var template = document.createElement('template');
-        template.innerHTML = formatUnicorn(html, htmlArguments);
-        this.shadowRoot.append(...template.content.childNodes);
+            var template = document.createElement('template');
+            template.innerHTML = formatUnicorn(html, htmlArguments);
+            this.shadowRoot.append(...template.content.childNodes);
+        };
     }
 }

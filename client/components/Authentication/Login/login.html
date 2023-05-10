@@ -1,0 +1,22 @@
+<div class="container">
+    <h1>Tea Time</h1>
+
+    <form onsubmit="this.getRootNode().host.loginAsync(); return false;">
+        <label for="email"><b>Email</b></label>
+        <input type="email" id="email-input" title="" placeholder="Enter email" name="email" required>
+
+        <label for="psw"><b>Password</b></label>
+        <input type="password" id="password-input" placeholder="Enter password" name="psw" required>
+
+        <button type="submit" class="btn-primary">Login</button>
+        <span id="login-error-span" class="error"></span>
+    </form> 
+
+    <p>Don't have an account? 
+        <a id="create-account-button" href="#" 
+            onclick="this.dispatchEvent(new CustomEvent('create-account-clicked', { bubbles: true, composed: true }))"
+        >
+        Create one!
+        </a>
+    </p>
+</div>

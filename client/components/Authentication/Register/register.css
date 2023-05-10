@@ -24,16 +24,6 @@ input {
   margin-bottom: 16px;
 }
 
-input.invalid {
-  border-color: #ff0000;
-  outline: none;
-}
-
-button:disabled {
-  background-color: #cccccc;
-  opacity: 0.5;
-}
-
 button:hover {
   cursor: pointer;
 }
