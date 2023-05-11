@@ -34,7 +34,7 @@ class AccountService extends BaseService
         }
         
         return [
-            "acces_token" => $this->tokenService->generate_token($id, $name, $role),
+            "access_token" => $this->tokenService->generate_token($id, $role, $name),
             "role" => $role
         ];
     }

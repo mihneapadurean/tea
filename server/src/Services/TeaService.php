@@ -15,10 +15,13 @@ class TeaService extends BaseService
         $connection = $this->GetConnection();
         $result = $connection->query("SELECT * FROM Teas");
 
+        $rows = array();
         if ($result -> num_rows > 0) {
-            $rows = array();
             while($row = $result -> fetch_assoc()) {
-                $rows[] = $row;
+                $tea = new Tea($row['Name'], $row['Type'], $row['Caffeine'], (int)$row['Rating'], $row['Description']);
+                $tea->id = (int)$row['Id'];
+
+                $rows[] = $tea;
             }
         }
 
@@ -30,11 +33,11 @@ class TeaService extends BaseService
         $connection = $this->GetConnection();
         $query = "INSERT INTO Teas (name, type, caffeine, rating, description) VALUES (?, ?, ?, ?, ?)";
         $statement = $connection->prepare($query);
-        $statement->bind_param('sssis', $newTea->Name, $newTea->Type, $newTea->Caffeine, $newTea->Rating, $newTea->Description);
+        $statement->bind_param('sssis', $newTea->name, $newTea->type, $newTea->caffeine, $newTea->rating, $newTea->description);
         $statement->execute();
         $statement->close();
 
-        $newTea->Id = $connection->insert_id;
+        $newTea->id = $connection->insert_id;
         return $newTea;
     }
 

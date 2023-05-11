@@ -62,5 +62,24 @@ function ApplyMigrations()
     VALUES (1, 'Admin', 'admin@yahoo.com', '$2y$10$40y54Yx5DoBaibRND09pIOgFAltsZdZWP8nqhlC4w6Z3EADjCSNim', 'admin');
   ");
 
+  //if the tea table is empty insert mock data
+  $teasQuery = $connection->query("SELECT Count(*) FROM Teas");
+  if($teasQuery->fetch_row()[0] == 0)
+  {
+    $connection->query("
+      INSERT INTO Teas (Name, Type, Caffeine, Rating, Description) 
+      VALUES 
+      ('Green Tea', 'Green', 'Low', 4, 'A light tea with a fresh taste and a hint of sweetness.'),
+      ('Earl Grey', 'Black', 'Medium', 4, 'A classic tea with a citrusy flavor and a hint of bergamot.'),
+      ('Chai', 'Black', 'High', 5, 'A spiced tea with a bold flavor and a hint of sweetness.'),
+      ('Peppermint', 'Herbal', 'None', 2, 'A refreshing tea with a cool minty flavor.'),
+      ('Jasmine', 'Green', 'Low', 3, 'A fragrant tea with a delicate floral flavor.'),
+      ('English Breakfast', 'Black', 'Medium', 4,'A robust tea with a full-bodied flavor and a hint of maltiness.'),
+      ('Lemon Ginger', 'Herbal', 'None' , 1,'A zesty tea with a bright lemon flavor and a hint of ginger.');
+    ");
+  }
+  
+  
+
   $connection->close();
 }

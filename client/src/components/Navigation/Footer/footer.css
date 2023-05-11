@@ -1,0 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+
+footer {
+  width: 99.3%;
+  position: absolute;
+  bottom: 0;
+  background-color: #efefef;
+  display: flex;
+  align-items: center;
+}

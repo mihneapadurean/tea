@@ -1,8 +1,8 @@
-import { BaseComponent } from "../BaseComponent.js";
+import { BaseComponent } from "../../BaseComponent.js";
 
 class NavBarComponent extends BaseComponent {
     constructor() {
-        super();
+        super("components/Navigation");
     }
 
     async connectedCallback() {

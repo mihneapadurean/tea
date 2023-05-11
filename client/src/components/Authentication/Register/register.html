@@ -10,12 +10,10 @@
         <label for="psw-confirm"><b>Confirm Password</b></label>
         <input id="confirm-password-input" type="password" placeholder="Confirm Password" name="psw-confirm" required onchange="this.setCustomValidity('')">
         <span class="register-error-span"></span>
-        <button type="submit" id="register-button" class="btn-primary" 
-                onclick="this.dispatchEvent(new CustomEvent('login-instead-clicked'))"
-        >
+        <button type="submit" id="register-button" class="btn-primary">
             Register
         </button>
     </form>
 
-    <p>Already have an account? <a id="login-button" href="#">Login here!</a></p>
+    <p>Already have an account? <a id="login-button" href="#" onclick="this.dispatchEvent(new CustomEvent('login-instead-clicked', { bubbles: true, composed: true }))">Login here!</a></p>
 </div>

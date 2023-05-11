@@ -1,6 +1,6 @@
 import { AuthenticationViewComponent } from "../Authentication/AuthenticationView/AuthenticationViewComponent.js";
 import { BaseComponent } from "../BaseComponent.js";
-import { HomeViewComponent } from "../HomeView/HomeViewComponent.js";
+import { HomeViewComponent } from "../Home/HomeView/HomeViewComponent.js";
 
 class AppComponent extends BaseComponent {
     constructor() {
@@ -28,8 +28,13 @@ class AppComponent extends BaseComponent {
     }
 
     loadHomeView() {
-        console.log("here");
         const homeView = new HomeViewComponent();
+        homeView.addEventListener("logout-successful", () => {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("role");
+            this.loadAuthenticationView();
+        });
+
         this.shadowRoot.replaceChildren(homeView);
     }
 }

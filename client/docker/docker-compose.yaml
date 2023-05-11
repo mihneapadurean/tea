@@ -1,0 +1,13 @@
+version: '3.8'
+
+name: client
+
+services:
+
+  web:
+    image: nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ../src:/var/www
+      - ./nginx:/etc/nginx/conf.d

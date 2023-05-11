@@ -1,4 +1,5 @@
-import { BaseComponent } from "../BaseComponent.js";
+import { BaseComponent } from "../../BaseComponent.js";
+import { API_URL, defaultFetchOptions } from "../../../helpers/constants.js";
 
 const teaTypesCaffeine = {
     "Black": ['Low', 'Medium', 'High'],
@@ -10,50 +11,31 @@ const teaTypesCaffeine = {
 
 class TeaTableComponent extends BaseComponent {
     constructor() {
-        super();
+        super("components/Home");
     }
 
     async connectedCallback() {
         await this.LoadComponentAsync();
 
         this.table = this.shadowRoot.getElementById('tea-table');
-
-        const tea1 = {
-            id: 1,
-            name: "Earl Grey",
-            type: "Tea",
-            caffeine: true,
-            rating: 4,
-            description: "Earl Grey tea is a tea blend which has been flavoured with the addition of oil of bergamot."
-        };
-          
-        const tea2 = {
-            id: 2,
-            name: "Chamomile",
-            type: "Tea",
-            caffeine: false,
-            rating: 5,
-            description: "Chamomile tea is a herbal infusion made from dried chamomile flowers and hot water."
-        };
-          
-        const tea3 = {
-            id: 4,
-            name: "Matcha",
-            type: "Tea",
-            caffeine: true,
-            rating: 3,
-            description: "Matcha is a finely ground powder made from shade-grown tea leaves. It is traditionally used in Japanese tea ceremonies."
-        };
-        this.teas = [tea1, tea2, tea3, tea1, tea1];
-
-        this.maxRows = 2;
-        this.nameSorting = 0; //0 - no, 1 - asc, 2 - desc
-        this.renderTable(this.teas);
+        
+        await this.loadTeas();
 
         this.setupSelects();
         this.setupSearchField();
         this.setupShowMore();
         this.setupColumnSorting();
+    }
+
+    async loadTeas() {
+        const response = await fetch(`${API_URL}/teas`, defaultFetchOptions);
+        if(!response.ok) {
+            return;
+        }
+
+        const teas = await response.json();
+        this.teas = teas;
+        this.renderTable(this.teas);
     }
 
     async addTea() {
@@ -68,16 +50,44 @@ class TeaTableComponent extends BaseComponent {
             description: formData.get("description")
         };
 
-        await fetch()
+        const response = await fetch(`${API_URL}/teas`, {
+            ...defaultFetchOptions,
+            method: "POST",
+            body: JSON.stringify(tea)
+        });
 
-        this.teas.push(tea);
+        if(!response.ok) {
+            return;
+        }
+
+        const teaResponse = await response.json();
+        console.log(teaResponse);
+
+        this.teas.push(teaResponse);
         this.renderTable(this.teas);
+        const searchInput = $(this.shadowRoot).find('#search-input');
+        searchInput.keyup()
+
         this.closeModal("add-tea-modal");
     }
 
     async deleteTea(id) {
+        console.log(defaultFetchOptions);
+        const response = await fetch(`${API_URL}/teas?` + new URLSearchParams({ id }), {
+            ...defaultFetchOptions,
+            method: "DELETE"
+        });
+
+        if(!response.ok) {
+            return;
+        }
+
+
         this.teas = this.teas.filter(t => t.id !== id);
         this.renderTable(this.teas);
+
+        const searchInput = $(this.shadowRoot).find('#search-input');
+        searchInput.keyup()
     }
 
     showModal(modalId) {
@@ -182,7 +192,18 @@ class TeaTableComponent extends BaseComponent {
         });
     }
 
+    setupAdminButtons() {
+        if(localStorage.getItem("role") === "admin") {
+            return;
+        }
+
+        $(this.shadowRoot).find(".btn-admin").prop('disabled', true);
+    }
+
     renderTable(displayedTeas){
+        this.maxRows = this.maxRows === undefined ? 2 : this.maxRows;
+        this.nameSorting = this.nameSorting === undefined ? 0 : this.nameSorting; //0 - no, 1 - asc, 2 - desc
+
         if(displayedTeas) {
             this.displayedTeas = displayedTeas;
         }
@@ -225,6 +246,8 @@ class TeaTableComponent extends BaseComponent {
         
         $(this.table).find("tbody").empty();
         visibleTeas.forEach(tea => this.addRow(tea));
+
+        this.setupAdminButtons();
     }
 
     addRow(tea) {
@@ -247,6 +270,7 @@ class TeaTableComponent extends BaseComponent {
         description.innerHTML = tea.description;
 
         const deleteButton = document.createElement('button');
+        deleteButton.classList.add('btn-danger', 'btn-admin');
         deleteButton.textContent = "Delete";
         deleteButton.onclick = () => this.deleteTea(tea.id);
         deleteButtonCell.appendChild(deleteButton);

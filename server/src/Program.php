@@ -11,6 +11,7 @@ require_once('Router.php');
 require_once('Services/AccountService.php');
 require_once('Services/TeaService.php');
 require_once('Services/TokenService.php');
+require_once('Configuration/Cors.php');
 
 class Program
 {
@@ -37,15 +38,14 @@ class Program
                                 }
 
                                 $context = (new TokenService())->is_token_valid($_SERVER['HTTP_AUTHORIZATION']);
-                                if($context->Role !== 'Admin') {
+                                if($context->Role !== 'admin') {
                                     http_response_code(403);
-                                    echo json_encode($context);
                                     die();
                                 }
 
                                 $newTea = new Tea($params['name'], $params['type'], $params['caffeine'], $params['rating'], $params['description']);
 
-                                (new TeaService())->createTea($newTea);
+                                $newTea = (new TeaService())->createTea($newTea);
 
                                 http_response_code(201);
                                 echo json_encode($newTea);
@@ -79,6 +79,7 @@ class Program
                             });
 
 
+        cors();
         $router->resolve($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
     }
 }

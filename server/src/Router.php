@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Server;
 
 require_once('Exceptions/RouteNotFoundException.php');
+require_once('Configuration/ErrorConfiguration.php');
 
 use Server\Exceptions\RouteNotFoundException;
 
@@ -35,7 +36,6 @@ class Router
 
         $action = $this->routes[$method][$parts[0]] ?? null;
 
-        header("Access-Control-Allow-Origin: *");
         if(!$action) {
             throw new RouteNotFoundException($parts[0]);
         }
